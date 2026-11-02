@@ -1,0 +1,5 @@
+{
+  "name": "autoflow-coordinator-run-status",
+  "owner": { "name": "Munsik-Park" },
+  "plugins": [{ "name": "run-status", "source": "./" }]
+}
