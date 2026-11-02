@@ -1,41 +1,41 @@
 # run-status
 
-[autoflow-coordinator](https://github.com/Munsik-Park/autoflow-coordinator) 회차의 진행 상태를 Claude Code pane에 표시하는 mod다. 현재 단계, 모듈 흐름, 판정을 5초마다 갱신한다.
+A mod that shows the state of [autoflow-coordinator](https://github.com/Munsik-Park/autoflow-coordinator) runs in a Claude Code pane: the current step, the module flow and the verdicts, refreshed every 5 seconds.
 
-## 요구 사항
+## Requirements
 
 - Claude Code
-- autoflow-coordinator clone. mod는 작업 디렉터리의 `tools/status.py`를 호출하므로, 조율 디렉터리에서 연 세션에서만 동작한다.
+- A clone of autoflow-coordinator. The mod calls `tools/status.py` in the working directory, so it works only in a session opened in the coordination directory.
 - python3
 
-## 설치
+## Install
 
-Claude Code 터미널 세션의 프롬프트에서:
+At the prompt of a Claude Code terminal session:
 
 ```
 /plugin install run-status --marketplace Munsik-Park/autoflow-coordinator-run-status
 ```
 
-shell에서:
+From a shell:
 
 ```
 claude plugin install run-status --marketplace Munsik-Park/autoflow-coordinator-run-status
 ```
 
-desktop app에서는 프롬프트 옆의 +, Plugins, Add marketplace에 `Munsik-Park/autoflow-coordinator-run-status`를 입력한 뒤 Add plugin을 누른다.
+In the desktop app, choose + next to the prompt, Plugins, Add marketplace, enter `Munsik-Park/autoflow-coordinator-run-status`, then press Add plugin.
 
-## 사용
-
-```
-/run-status            이 세션에서 만든 회차
-/run-status <회차>      지정한 회차
-/run-status --all      active 회차 전체
-```
-
-## 개발
+## Usage
 
 ```
-claude --plugin-dir <이 폴더>
-claude plugin validate <이 폴더>
-claude plugin test <이 폴더>
+/run-status            the run created in this session
+/run-status <run>      the named run
+/run-status --all      every active run
+```
+
+## Development
+
+```
+claude --plugin-dir <this folder>
+claude plugin validate <this folder>
+claude plugin test <this folder>
 ```

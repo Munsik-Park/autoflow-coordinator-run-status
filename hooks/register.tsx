@@ -57,11 +57,11 @@ const stepName = (step: StepStatus) =>
   `${step.entry ? ENTRY_MARK[step.entry] : ''}${step.label}${step.cause ? ` ← ${step.cause}` : ''}`
 const stepNote = (step: StepStatus) =>
   step.state === 'running'
-    ? [step.session_state, step.idle_sec === null ? '' : `${elapsed(step.idle_sec)} 전 변경`].filter(Boolean).join(' · ')
+    ? [step.session_state, step.idle_sec === null ? '' : `idle ${elapsed(step.idle_sec)}`].filter(Boolean).join(' · ')
     : (step.verdict ?? '')
 
 const nowLine = (now: StepStatus | null) =>
-  now ? `지금: ${now.session ?? '?'} ${now.label} · ${stepNote(now)}` : '지금: 진행 중인 단계 없음'
+  now ? `Now: ${now.session ?? '?'} ${now.label} · ${stepNote(now)}` : 'Now: no step in progress'
 
 let timer: Timer | undefined
 let cwd: string | undefined
@@ -139,7 +139,7 @@ export const register: Register = on => {
     return (
       <Box flexDirection="column">
         {error && <Text color="error">{error}</Text>}
-        {!error && runs.length === 0 && <Text dimColor>{target === ALL_RUNS ? 'No active run.' : '이 세션의 회차 없음'}</Text>}
+        {!error && runs.length === 0 && <Text dimColor>{target === ALL_RUNS ? 'No active run.' : 'No run in this session.'}</Text>}
         {runs.map(run => {
           const isLive = run.sessions.some(s => s.state !== 'exited')
           // In the list of every active run, one nothing runs in may be stale: its last step is enough.
@@ -150,9 +150,9 @@ export const register: Register = on => {
           return (
             <Box flexDirection="column" marginBottom={1}>
               <Text bold>{title(run)}</Text>
-              {isLive || run.now ? <Text bold>{nowLine(run.now)}</Text> : <Text dimColor>진행 중인 단계 없음</Text>}
+              {isLive || run.now ? <Text bold>{nowLine(run.now)}</Text> : <Text dimColor>No step in progress</Text>}
               {run.error && <Text dimColor>{run.error}</Text>}
-              {hidden > 0 && <Text dimColor>… {hidden}단계</Text>}
+              {hidden > 0 && <Text dimColor>… {hidden} earlier</Text>}
               {shown.map((step, i) => {
                 const { mark, color } = STEP_MARK[step.state]
                 const isFirstOfSession = i === 0 || shown[i - 1]?.session !== step.session
