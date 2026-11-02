@@ -101,6 +101,21 @@ test('the verdicts stand in one column whatever marks the names carry', async ($
   await ui.unmount()
 })
 
+test('a long step name is cut so the verdict stays in its column', async ($, on) => {
+  const long = 'Document change and PR (outside modules)'
+  const run = { ...LOOK.runs[1], steps: [step({ label: long }), step({ label: 'short-1' })] }
+  engine(on, () => ok({ runs: [run] }))
+  await $.session.start(START)
+  await open($, 'demo')
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  const cut = (await ui.find({ type: 'Text', text: /^S1.*Document/ }))?.text
+  expect(cut).toContain('…')
+  expect(cut).not.toContain('modules')
+  expect(cut?.indexOf('통과')).toBe((await ui.find({ type: 'Text', text: /short-1/ }))?.text.indexOf('통과'))
+  await ui.unmount()
+})
+
 test('a step row stays on one row', async ($, on) => {
   engine(on, () => ok(LOOK))
   await $.session.start(START)
