@@ -37,9 +37,9 @@ const elapsed = (sec: number | null) => {
   return `${Math.floor(sec / 3600)}h${Math.floor((sec % 3600) / 60)}m`
 }
 
-// Hangul takes two cells in a terminal.
+// Hangul syllables take two cells in a terminal; the marks in a step's name take one.
 const cells = (text: string) =>
-  [...text].reduce((sum, c) => sum + ((c.codePointAt(0) ?? 0) >= 0x1100 ? 2 : 1), 0)
+  [...text].reduce((sum, c) => sum + ((c.codePointAt(0) ?? 0) >= 0xac00 ? 2 : 1), 0)
 const pad = (text: string, width: number) => text + ' '.repeat(Math.max(1, width - cells(text)))
 
 const title = (run: RunStatus) =>
@@ -116,6 +116,9 @@ export const register: Register = on => {
     await update($, snapshot, value => ({ ...value, target }))
     await $.ui.open({ id: PANE, title: 'Runs' })
     await start($)
+    // The newest step is the last row. `end` keeps up as the flow grows, until the person moves
+    // the window. The list of every run has no one end to follow. The pane stands without this.
+    if (target !== ALL_RUNS) await $.ui.scroll({ in: PANE, to: 'end' }).catch(() => undefined)
 
     return { text: `Run status pane: ${target ?? "this session's run"}` }
   })
@@ -157,7 +160,7 @@ export const register: Register = on => {
                 const noteColor = step.state === 'running' ? SESSION_COLOR[step.session_state ?? ''] : color
 
                 return (
-                  <Text dimColor={!isLive && target === ALL_RUNS}>
+                  <Text wrap="truncate-end" dimColor={!isLive && target === ALL_RUNS}>
                     {(isFirstOfSession ? (step.session ?? '?') : '').padEnd(4)}
                     <Text color={color}>{mark}</Text>
                     {' '}

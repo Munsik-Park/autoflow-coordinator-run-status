@@ -87,6 +87,30 @@ test('the pane says where the run stands, then its flow', async ($, on) => {
   await ui.unmount()
 })
 
+test('the verdicts stand in one column whatever marks the names carry', async ($, on) => {
+  engine(on, () => ok(LOOK))
+  await $.session.start(START)
+  await open($)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  const column = async (name: RegExp) => (await ui.find({ type: 'Text', text: name }))?.text.indexOf('통과')
+  const plain = await column(/analysis-1/)
+  expect(plain).toBeGreaterThan(0)
+  expect(await column(/delivery-2/)).toBe(plain)
+  expect(await column(/analysis-2/)).toBe(plain)
+  await ui.unmount()
+})
+
+test('a step row stays on one row', async ($, on) => {
+  engine(on, () => ok(LOOK))
+  await $.session.start(START)
+  await open($)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect((await ui.find({ type: 'Text', text: /▶ review-1/ }))?.props.wrap).toBe('truncate-end')
+  await ui.unmount()
+})
+
 test('in the list of every active run, one nothing runs in shows its last step alone', async ($, on) => {
   const seen: string[][] = []
   engine(on, argv => {
