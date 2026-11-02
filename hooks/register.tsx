@@ -41,6 +41,16 @@ const elapsed = (sec: number | null) => {
 const cells = (text: string) =>
   [...text].reduce((sum, c) => sum + ((c.codePointAt(0) ?? 0) >= 0xac00 ? 2 : 1), 0)
 const pad = (text: string, width: number) => text + ' '.repeat(Math.max(1, width - cells(text)))
+// A name past its column would push the verdict out of the pane, so it is cut to leave one cell before the verdict.
+const fit = (text: string, width: number) => {
+  if (cells(text) < width) return text
+  let kept = ''
+  for (const c of text) {
+    if (cells(kept + c) > width - 2) break
+    kept += c
+  }
+  return `${kept}…`
+}
 
 const title = (run: RunStatus) =>
   [
@@ -164,7 +174,7 @@ export const register: Register = on => {
                     {(isFirstOfSession ? (step.session ?? '?') : '').padEnd(4)}
                     <Text color={color}>{mark}</Text>
                     {' '}
-                    <Text color={step.entry === 'return' ? 'warning' : undefined}>{pad(stepName(step), nameCells)}</Text>
+                    <Text color={step.entry === 'return' ? 'warning' : undefined}>{pad(fit(stepName(step), nameCells), nameCells)}</Text>
                     <Text color={noteColor}>{note}</Text>
                   </Text>
                 )
