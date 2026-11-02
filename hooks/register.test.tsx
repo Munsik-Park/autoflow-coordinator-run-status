@@ -75,7 +75,7 @@ test('the pane says where the run stands, then its flow', async ($, on) => {
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect((await ui.find({ type: 'Text', text: /^demo-553/ }))?.text).toBe('demo-553 · #553 · analysis-review')
-  expect((await ui.find({ type: 'Text', text: /^지금/ }))?.text).toBe('지금: S2 review-1 · working · 3m 전 변경')
+  expect((await ui.find({ type: 'Text', text: /^Now/ }))?.text).toBe('Now: S2 review-1 · working · idle 3m')
   expect((await ui.find({ type: 'Text', text: /hypothesis-1/ }))?.text).toContain('✗ hypothesis-1')
   expect((await ui.find({ type: 'Text', text: /hypothesis-1/ }))?.text).toContain('품질 목표 미달')
   expect((await ui.find({ type: 'Text', text: /analysis-2/ }))?.text).toContain('✓ ↩ analysis-2 ← hypothesis-1')
@@ -83,7 +83,7 @@ test('the pane says where the run stands, then its flow', async ($, on) => {
   expect((await ui.find({ type: 'Text', text: /delivery-2/ }))?.text).toContain('↺ delivery-2 ')
   expect((await ui.find({ type: 'Text', text: /analysis-1/ }))?.text).toContain('S1  ✓')
   expect((await ui.find({ type: 'Text', text: /analysis-2/ }))?.text).toContain('    ✓')
-  expect((await ui.find({ type: 'Text', text: /▶ review-1/ }))?.text).toContain('working · 3m 전 변경')
+  expect((await ui.find({ type: 'Text', text: /▶ review-1/ }))?.text).toContain('working · idle 3m')
   await ui.unmount()
 })
 
@@ -125,7 +125,7 @@ test('in the list of every active run, one nothing runs in shows its last step a
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(await ui.find({ type: 'Text', text: /first-1/ })).toBeUndefined()
   expect((await ui.find({ type: 'Text', text: /last-1/ }))?.text).toContain('✓ last-1')
-  expect((await ui.find({ type: 'Text', text: /1단계/ }))?.text).toContain('1단계')
+  expect((await ui.find({ type: 'Text', text: /1 earlier/ }))?.text).toContain('1 earlier')
   await ui.unmount()
 })
 
@@ -165,7 +165,7 @@ test('no name asks for this session\'s run and says when it has none', async ($,
 
   expect(seen.at(-1)?.at(-1)).toBe('--caller')
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
-  expect((await ui.find({ type: 'Text' }))?.text).toBe('이 세션의 회차 없음')
+  expect((await ui.find({ type: 'Text' }))?.text).toBe('No run in this session.')
   await ui.unmount()
 })
 

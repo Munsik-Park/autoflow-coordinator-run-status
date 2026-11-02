@@ -1,6 +1,6 @@
 {
   "name": "run-status",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Show the work sessions of active coordination runs in a pane",
   "types": "./types/index.d.ts"
 }
